@@ -1,1 +1,2 @@
-import open3d as o3dY
+with open("./result/prova.txt","w") as file:
+    pass
