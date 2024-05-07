@@ -7,7 +7,7 @@ matplotlib.use('TkAgg')
 from matplotlib import pyplot as plt
 import open3d as o3d
 
-image = Image.open("./images/razzo2.jpeg")
+image = Image.open("./images/simple_cube.jpeg")
 
 #data preprocessing
 new_height = 480 if image.height > 480 else image.height
