@@ -1,6 +1,5 @@
 import cv2 
 import numpy as np 
-from itertools import izip 
 import matplotlib.pyplot as plt 
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
@@ -83,7 +82,7 @@ def DrawMatchesCustom(img1,img2,kp1,kp2,F,drawOnly=None):
     
     drawOnly = kp1.shape[0] if (drawOnly is None) else drawOnly
     i = 0 
-    for pt1,pt2 in izip(kp1,kp2):
+    for pt1,pt2 in zip(kp1,kp2):
         color = tuple(list(np.random.uniform(size=(3,))))
         #print color 
         ax[0].plot(pt1[0],pt1[1],'x',c=color)

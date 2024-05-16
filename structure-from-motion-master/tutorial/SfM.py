@@ -1,6 +1,5 @@
 import numpy as np 
 import cv2 
-from itertools import izip
 
 def EstimateFundamentalMatrix(x1,x2):
     if x1.shape[1]==2: #converting to homogenous coordinates if not already
@@ -194,7 +193,7 @@ def GetTriangulatedPts(img1pts,img2pts,K,R,t,triangulateFunc,Rbase=None,tbase=No
     img1ptsNorm = cv2.convertPointsFromHomogeneous(img1ptsNorm)[:,0,:]
     img2ptsNorm = cv2.convertPointsFromHomogeneous(img2ptsNorm)[:,0,:]
     
-    print Rbase.shape, tbase.shape, R.shape, t.shape
+    print(Rbase.shape, tbase.shape, R.shape, t.shape)
     pts4d = triangulateFunc(np.hstack((Rbase,tbase)),np.hstack((R,t)),img1ptsNorm.T,img2ptsNorm.T)
     pts3d = cv2.convertPointsFromHomogeneous(pts4d.T)[:,0,:]
     
