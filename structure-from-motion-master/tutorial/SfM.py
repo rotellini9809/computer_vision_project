@@ -59,7 +59,7 @@ def EstimateFundamentalMatrixRANSAC(img1pts,img2pts,outlierThres,prob=None,iters
 
     bestInliers, bestF, bestmask = 0, None, None
 
-    for i in xrange(iters): 
+    for i in range(iters): 
         
         #Selecting 8 random points
         mask = np.random.randint(low=0,high=img1pts.shape[0],size=(8,))
@@ -160,7 +160,7 @@ def Triangulate(P1,P2,img1pts,img2pts):
     
     out = np.zeros((img1pts.shape[0],4))
     
-    for i,(img1pt, img2pt) in enumerate(izip(img1pts,img2pts)): 
+    for i,(img1pt, img2pt) in enumerate(zip(img1pts,img2pts)): 
         img1pt_cross, img2pt_cross = Vec2Skew(img1pt), Vec2Skew(img2pt)
         
         A = []
@@ -231,7 +231,7 @@ def LinearPnP(X, x, K, isNormalized=False):
 
     A = np.zeros((X.shape[0]*3,12))
 
-    for i in xrange(X.shape[0]): 
+    for i in range(X.shape[0]): 
         A[i*3,:] = np.concatenate((np.zeros((4,)), -X[i,:], x[i,1]*X[i,:]))
         A[i*3+1,:] = np.concatenate((X[i,:], np.zeros((4,)), -x[i,0]*X[i,:]))
         A[i*3+2,:] = np.concatenate((-x[i,1]*X[i,:], x[i,0]*X[i,:], np.zeros((4,))))    
@@ -258,7 +258,7 @@ def LinearPnPRansac(X,x,K,outlierThres,iters):
 
     bestR,bestt,bestmask,bestInlierCount = None,None,None,0
 
-    for i in xrange(iters): 
+    for i in range(iters): 
 
         #Randomly selecting 6 points for linear pnp
         mask = np.random.randint(low=0,high=X.shape[0],size=(6,))

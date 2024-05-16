@@ -177,7 +177,7 @@ class SFM(object):
                     self._TriangulateTwoViews(prev_name, name)
 
                 else: 
-                    print 'skipping {} and {}'.format(prev_name, name)
+                    print ('skipping {} and {}'.format(prev_name, name))
         
     def _NewViewPoseEstimation(self, name): 
         
@@ -305,15 +305,15 @@ class SFM(object):
         t2 = time()
         this_time = t2-t1
         total_time += this_time
-        print 'Baseline Cameras {0}, {1}: Pose Estimation [time={2:.3}s]'.format(name1, name2,
-                                                                                 this_time)
+        print ('Baseline Cameras {0}, {1}: Pose Estimation [time={2:.3}s]'.format(name1, name2,
+                                                                                 this_time))
 
         self._TriangulateTwoViews(name1, name2)
         t1 = time()
         this_time = t1-t2
         total_time += this_time
-        print 'Baseline Cameras {0}, {1}: Baseline Triangulation [time={2:.3}s]'.format(name1, 
-                                                                                name2, this_time)
+        print ('Baseline Cameras {0}, {1}: Baseline Triangulation [time={2:.3}s]'.format(name1, 
+                                                                                name2, this_time))
 
         views_done = 2 
 
@@ -325,8 +325,8 @@ class SFM(object):
         errors.append(err1)
         errors.append(err2)
 
-        print 'Camera {}: Reprojection Error = {}'.format(name1, err1)
-        print 'Camera {}: Reprojection Error = {}'.format(name2, err2)
+        print ('Camera {}: Reprojection Error = {}'.format(name1, err1))
+        print ('Camera {}: Reprojection Error = {}'.format(name2, err2))
 
         for new_name in self.image_names[2:]: 
 
@@ -336,14 +336,14 @@ class SFM(object):
             t2 = time()
             this_time = t2-t1
             total_time += this_time
-            print 'Camera {0}: Pose Estimation [time={1:.3}s]'.format(new_name, this_time)
+            print ('Camera {0}: Pose Estimation [time={1:.3}s]'.format(new_name, this_time))
 
             #triangulation for new registered camera
             self._TriangulateNewView(new_name)
             t1 = time()
             this_time = t1-t2
             total_time += this_time
-            print 'Camera {0}: Triangulation [time={1:.3}s]'.format(new_name, this_time)
+            print ('Camera {0}: Triangulation [time={1:.3}s]'.format(new_name, this_time))
 
             #3d point cloud update and error for new camera
             views_done += 1 
@@ -351,11 +351,11 @@ class SFM(object):
 
             new_err = self._ComputeReprojectionError(new_name)
             errors.append(new_err)
-            print 'Camera {}: Reprojection Error = {}'.format(new_name, new_err)
+            print ('Camera {}: Reprojection Error = {}'.format(new_name, new_err))
 
         mean_error = sum(errors) / float(len(errors))
-        print 'Reconstruction Completed: Mean Reprojection Error = {2} [t={0:.6}s], \
-                Results stored in {1}'.format(total_time, self.opts.out_dir, mean_error)
+        print ('Reconstruction Completed: Mean Reprojection Error = {2} [t={0:.6}s], \
+                Results stored in {1}'.format(total_time, self.opts.out_dir, mean_error))
         
 
 def SetArguments(parser): 

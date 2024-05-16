@@ -146,36 +146,42 @@ def DrawCorrespondences(img, ptsTrue, ptsReproj, ax, drawOnly=50):
     ax.scatter(ptsTrue_[:,0],ptsTrue_[:,1],marker='x',c=colors)
     ax.scatter(ptsReproj_[:,0],ptsReproj_[:,1],marker='.',c=colors)
 
-def GetImageMatches(img1,img2):
-    surfer=cv2.xfeatures2d.SURF_create()
-    kp1, desc1 = surfer.detectAndCompute(img1,None)
-    kp2, desc2 = surfer.detectAndCompute(img2,None)
+def GetImageMatchesAKAZE(img1, img2):
+    # Creating AKAZE object
+    akaze = cv2.AKAZE_create()
 
-    matcher = cv2.BFMatcher(crossCheck=True)
+    # Detecting keypoints and computing descriptors
+    kp1, desc1 = akaze.detectAndCompute(img1, None)
+    kp2, desc2 = akaze.detectAndCompute(img2, None)
+
+    # Creating BFMatcher object
+    matcher = cv2.BFMatcher()
+
+    # Matching descriptors
     matches = matcher.match(desc1, desc2)
 
-    matches = sorted(matches, key = lambda x:x.distance)
+    # Sorting matches based on distance
+    matches = sorted(matches, key=lambda x: x.distance)
 
-    return kp1,desc1,kp2,desc2,matches
+    return kp1, desc1, kp2, desc2, matches
 
-def GetAlignedMatches(kp1,desc1,kp2,desc2,matches):
+def GetAlignedMatchesAKAZE(kp1, kp2, matches):
+    # Sorting matches in case it's not already sorted
+    matches = sorted(matches, key=lambda x: x.distance)
 
-    #Sorting in case matches array isn't already sorted
-    matches = sorted(matches, key = lambda x:x.distance)
-
-    #retrieving corresponding indices of keypoints (in both images) from matches.  
+    # Retrieving corresponding indices of keypoints
     img1idx = np.array([m.queryIdx for m in matches])
     img2idx = np.array([m.trainIdx for m in matches])
 
-    #filtering out the keypoints that were NOT matched. 
-    kp1_ = (np.array(kp1))[img1idx]
-    kp2_ = (np.array(kp2))[img2idx]
+    # Filtering out the keypoints that were NOT matched
+    kp1_ = np.array(kp1)[img1idx]
+    kp2_ = np.array(kp2)[img2idx]
 
-    #retreiving the image coordinates of matched keypoints
+    # Retrieving the image coordinates of matched keypoints
     img1pts = np.array([kp.pt for kp in kp1_])
     img2pts = np.array([kp.pt for kp in kp2_])
 
-    return img1pts,img2pts,img1idx,img2idx
+    return img1pts, img2pts, img1idx, img2idx
 
 def Find2D3DMatches(desc1,img1idx,desc2,img2idx,desc3,kp3,mask,pts3d):
     #Picking only those descriptors for which 3D point is available
