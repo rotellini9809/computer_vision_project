@@ -398,4 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 
-\structure-from-motion-master\data
+/structure-from-motion-master/data/*
