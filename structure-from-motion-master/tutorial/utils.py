@@ -138,11 +138,12 @@ def PlotCamera(R,t,ax,scale=.5,depth=.5,faceColor='grey'):
 def DrawCorrespondences(img, ptsTrue, ptsReproj, ax, drawOnly=50): 
     ax.imshow(img)
     
+    print(ptsTrue)
     randidx = np.random.choice(ptsTrue.shape[0],size=(drawOnly,),replace=False)
     ptsTrue_, ptsReproj_ = ptsTrue[randidx], ptsReproj[randidx]
     
     colors = colors=np.random.rand(drawOnly,3)
-    
+    print(ptsTrue_)
     ax.scatter(ptsTrue_[:,0],ptsTrue_[:,1],marker='x',c=colors)
     ax.scatter(ptsReproj_[:,0],ptsReproj_[:,1],marker='.',c=colors)
 
@@ -184,16 +185,28 @@ def GetAlignedMatchesAKAZE(kp1, kp2, matches):
     return img1pts, img2pts, img1idx, img2idx
 
 def Find2D3DMatches(desc1,img1idx,desc2,img2idx,desc3,kp3,mask,pts3d):
+    # Creating AKAZE object
+    akaze = cv2.AKAZE_create()
+
+    # Detecting keypoints and computing descriptors for image 3
+    kp3_akaze, desc3_akaze = akaze.detectAndCompute(desc3, None)
+
     #Picking only those descriptors for which 3D point is available
     desc1_3D = desc1[img1idx][mask]
     desc2_3D = desc2[img2idx][mask]
 
-    matcher = cv2.BFMatcher(crossCheck=True)
-    matches = matcher.match(desc3, np.concatenate((desc1_3D,desc2_3D),axis=0))
+    # Creating BFMatcher object
+    matcher = cv2.BFMatcher()
+
+    # Matching descriptors between image 3 and the concatenated descriptors from image 1 and image 2
+    matches = matcher.match(desc3_akaze, np.concatenate((desc1_3D,desc2_3D),axis=0))
+
+    # Sorting matches based on distance
+    matches = sorted(matches, key=lambda x: x.distance)
 
     #Filtering out matched 2D keypoints from new view 
     img3idx = np.array([m.queryIdx for m in matches])
-    kp3_ = (np.array(kp3))[img3idx]
+    kp3_ = np.array(kp3_akaze)[img3idx]
     img3pts = np.array([kp.pt for kp in kp3_])
 
     #Filtering out matched 3D already triangulated points 
