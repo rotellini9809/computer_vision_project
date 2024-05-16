@@ -59,8 +59,8 @@ def FeatMatch(opts, data_files=[]):
     num_matches = ((len(img_paths)-1) * (len(img_paths))) / 2
 
     t1 = time()
-    for i in xrange(len(data)): 
-        for j in xrange(i+1, len(data)): 
+    for i in range(len(data)): 
+        for j in range(i+1, len(data)): 
             img_name1, kp1, desc1 = data[i]
             img_name2, kp2, desc2 = data[j]
 

@@ -8,7 +8,7 @@ import cv2
 
 def EstimateFundamentalMatrix(x1,x2): 
     A = np.zeros((x1.shape[0],9))
-    for i in xrange(x1.shape[0]):
+    for i in range(x1.shape[0]):
         rowA = np.array([x1[i,0]*x2[i,0], x1[i,0]*x2[i,1], x1[i,0],
               x1[i,1]*x2[i,0], x1[i,1]*x2[i,1], x1[i,1],
               x2[i,0], x2[i,1], 1])
@@ -47,7 +47,7 @@ def LinearTriangulate(K, C1, R1, C2, R2, x1, x2):
     x1h = np.hstack((x1, np.ones((x1.shape[0],1))))
     x2h = np.hstack((x2, np.ones((x2.shape[0],1))))
     
-    for i in xrange(x1h.shape[0]): 
+    for i in range(x1h.shape[0]): 
         x1hcross = Vec2Skew(x1h[i,:])
         x2hcross = Vec2Skew(x2h[i,:])
 
@@ -67,7 +67,7 @@ def LinearPnP(X, x, K):
 
     A = np.zeros((X.shape[0]*3,12))
 
-    for i in xrange(X.shape[0]): 
+    for i in range(X.shape[0]): 
         A[i*3,:] = np.concatenate((np.zeros((4,)), -Xh[i,:], xc[i,1]*Xh[i,:]))
         A[i*3+1,:] = np.concatenate((Xh[i,:], np.zeros((4,)), -xc[i,0]*Xh[i,:]))
         A[i*3+2,:] = np.concatenate((-xc[i,1]*Xh[i,:], xc[i,0]*Xh[i,:], np.zeros((4,))))    
@@ -108,7 +108,7 @@ def ExtractCameraPoses(E):
     Cs[3] = -u[:,-1]
     Rs[3] = u.dot(W.T.dot(v.T))
     
-    for i in xrange(4):        
+    for i in range(4):        
         if np.linalg.det(Rs[i]) < 0: 
             Cs[i] = -1*Cs[i]
             Rs[i] = -1*Rs[i]
@@ -140,7 +140,7 @@ def LoadUPennData():
 
 def RunSFM(filename=None): 
     #LOADING IMAGES, KEYPOINTS ETC..
-    img1,img2,img3,x1,x2,x3,C1,R1,C2,R2=LoadUPennData()
+    img1,img2,img3,x1,x2,x3,C1,R1,C2,R2,K=LoadUPennData()
     
     #FUNDAMENTAL MATRIX ESTIMATION
     F = EstimateFundamentalMatrix(x1,x2)
