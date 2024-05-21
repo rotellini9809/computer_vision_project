@@ -215,30 +215,7 @@ class SFM(object):
 
             return pts3d, pts2d, len(kp)
         
-        def __Find2D3DMatches():
-            pts3d, pts2d = np.zeros((0,3)), np.zeros((0,2))
-            kp, desc = self._LoadFeatures(name)
-
-            i = 0 
-            
-            while i < len(self.image_names): 
-                curr_name = self.image_names[i]
-
-                if curr_name in self.image_data.keys(): 
-                    matches = self._LoadMatches(curr_name, name)
-
-                    ref = self.image_data[curr_name][-1]
-                    pts3d_idx = np.array([ref[m.queryIdx] for m in matches \
-                                        if ref[m.queryIdx] > 0])
-                    pts2d_ = np.array([kp[m.trainIdx].pt for m in matches \
-                                        if ref[m.queryIdx] > 0])
-                                        
-                    pts3d = np.concatenate((pts3d, self.point_cloud[pts3d_idx.astype(int)]),axis=0)
-                    pts2d = np.concatenate((pts2d, pts2d_),axis=0)
-
-                i += 1 
-
-            return pts3d, pts2d, len(kp)
+        
 
         pts3d, pts2d, ref_len = _Find2D3DMatches()
         _, R, t, _ = cv2.solvePnPRansac(pts3d[:,np.newaxis],pts2d[:,np.newaxis],self.K,None,
