@@ -49,7 +49,7 @@ def drawlines(img1,img2,lines,pts1,pts2,drawOnly=None,linesize=3,circlesize=10):
 
     return img1_,img2_
 
-def GetEpipair(F, pts1, pts2,drawOnly=None):
+def GetEpipair(F, pts1, pts2,img1,img2,drawOnly=None):
     lines1 = cv2.computeCorrespondEpilines(pts2.reshape(-1,1,2), 2,F)
     lines1 = lines1.reshape(-1,3)
     
@@ -136,15 +136,19 @@ def PlotCamera(R,t,ax,scale=.5,depth=.5,faceColor='grey'):
                                          linewidths=1, edgecolors='k', alpha=.25))
 
 def DrawCorrespondences(img, ptsTrue, ptsReproj, ax, drawOnly=50): 
+    # Display the image on the axes
     ax.imshow(img)
     
-    
+    # Randomly select 'drawOnly' number of points from the true and reprojected points
     randidx = np.random.choice(ptsTrue.shape[0],size=(drawOnly,),replace=False)
     ptsTrue_, ptsReproj_ = ptsTrue[randidx], ptsReproj[randidx]
     
+    # Generate a random color for each of the selected points
     colors = colors=np.random.rand(drawOnly,3)
     
+    # Plot the selected true points on the image with 'x' markers
     ax.scatter(ptsTrue_[:,0],ptsTrue_[:,1],marker='x',c=colors)
+    # Plot the selected reprojected points on the image with '.' markers
     ax.scatter(ptsReproj_[:,0],ptsReproj_[:,1],marker='.',c=colors)
 
 def GetImageMatchesAKAZE(img1, img2):
@@ -160,9 +164,6 @@ def GetImageMatchesAKAZE(img1, img2):
 
     # Matching descriptors
     matches = matcher.match(desc1, desc2)
-
-    # Sorting matches based on distance
-    matches = sorted(matches, key=lambda x: x.distance)
 
     return kp1, desc1, kp2, desc2, matches
 
@@ -189,11 +190,22 @@ def Find2D3DMatches(desc1,img1idx,desc2,img2idx,desc3,kp3,mask,pts3d):
     desc1_3D = desc1[img1idx][mask]
     desc2_3D = desc2[img2idx][mask]
 
+    print(desc1_3D)
+    print(desc2_3D)
     # Creating BFMatcher object
     matcher = cv2.BFMatcher()
 
-    # Matching descriptors between image 3 and the concatenated descriptors from image 1 and image 2
-    matches = matcher.match(desc3, np.concatenate((desc1_3D,desc2_3D),axis=0))
+    # Matching descriptors between image 3 and image 1
+    matches1 = matcher.match(desc3, desc1_3D)
+
+    # Matching descriptors between image 3 and image 2
+    matches2 = matcher.match(desc3, desc2_3D)
+
+    print('Number of matches with image 1: ', len(matches1))
+    print('Number of matches with image 2: ', len(matches2))
+
+    # Merging the matches
+    matches = matches1 + matches2
 
     # Sorting matches based on distance
     matches = sorted(matches, key=lambda x: x.distance)
@@ -205,7 +217,6 @@ def Find2D3DMatches(desc1,img1idx,desc2,img2idx,desc3,kp3,mask,pts3d):
 
     #Filtering out matched 3D already triangulated points 
     pts3didx = np.array([m.trainIdx for m in matches])
-    pts3didx[pts3didx >= pts3d.shape[0]] = pts3didx[pts3didx >= pts3d.shape[0]] - pts3d.shape[0]
     pts3d_ = pts3d[pts3didx]
 
     return img3pts, pts3d_
