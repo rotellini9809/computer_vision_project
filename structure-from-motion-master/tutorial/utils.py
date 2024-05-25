@@ -193,7 +193,7 @@ def Find2D3DMatches(desc1,img1idx,desc2,img2idx,desc3,kp3,mask,pts3d):
     print(desc1_3D)
     print(desc2_3D)
     # Creating BFMatcher object
-    matcher = cv2.BFMatcher()
+    matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
 
     # Matching descriptors between image 3 and image 1
     matches1 = matcher.match(desc3, desc1_3D)
@@ -211,9 +211,10 @@ def Find2D3DMatches(desc1,img1idx,desc2,img2idx,desc3,kp3,mask,pts3d):
     matches = sorted(matches, key=lambda x: x.distance)
 
     #Filtering out matched 2D keypoints from new view 
-    img3idx = np.array([m.queryIdx for m in matches])
-    kp3_ = np.array(kp3)[img3idx]
-    img3pts = np.array([kp.pt for kp in kp3_])
+    # img3idx = np.array([m.queryIdx for m in matches])
+    # kp3_ = np.array(kp3)[img3idx]
+    # img3pts = np.array([kp.pt for kp in kp3_])
+    img3pts = np.array([kp3[m.queryIdx].pt for m in matches])
 
     #Filtering out matched 3D already triangulated points 
     pts3didx = np.array([m.trainIdx for m in matches])
