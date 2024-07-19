@@ -13,7 +13,7 @@ def run(root_dir, image_format):
     K = np.loadtxt(os.path.join(root_dir, 'images', 'K.txt'))
     sfm = SFM(views, matches, K)
     sfm.reconstruct()
-    sfm.visualize_points()
+    sfm.visualize_points_and_mesh()
 
     
 

@@ -201,10 +201,10 @@ class SFM:
 
         o3d.io.write_point_cloud(filename, pcd)
 
-    def visualize_points(self):
+    def visualize_points_and_mesh(self):
         filename = os.path.join(self.results_path, str(len(self.done)) + '_images.ply')
 
-        pcd = o3d.io.read_point_cloud("merged.ply")
+        pcd = o3d.io.read_point_cloud(filename)
         o3d.visualization.draw_geometries([pcd])
 
         # Stima delle normali
@@ -223,6 +223,8 @@ class SFM:
         o3d.visualization.draw_geometries([mesh], mesh_show_back_face=True)
 
         o3d.io.write_triangle_mesh(filename[:-4]+".obj",mesh)
+
+
 
 
     def reconstruct(self):
