@@ -13,8 +13,11 @@ def run(root_dir, image_format):
     K = np.loadtxt(os.path.join(root_dir, 'images', 'K.txt'))
     sfm = SFM(views, matches, K)
     sfm.reconstruct()
+    sfm.visualize_points()
 
+    
 
 
 if __name__ == '__main__':
     run('data\fountain-P11\images', 'jpg')
+

@@ -194,7 +194,36 @@ class SFM:
 
         if self.colors_3D.shape[0] > 0:
             pcd.colors=o3d.utility.Vector3dVector(self.colors_3D / 255.0)
+        
+        # Rimuovi i punti outliers utilizzando il filtro statistico
+        cl, ind = pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=4.0)
+        new_pcd = pcd.select_by_index(ind)
+
         o3d.io.write_point_cloud(filename, pcd)
+
+    def visualize_points(self):
+        filename = os.path.join(self.results_path, str(len(self.done)) + '_images.ply')
+
+        pcd = o3d.io.read_point_cloud("merged.ply")
+        o3d.visualization.draw_geometries([pcd])
+
+        # Stima delle normali
+        pcd.estimate_normals()
+        pcd.orient_normals_to_align_with_direction()
+        o3d.visualization.draw_geometries_with_editing([pcd])
+
+        # Crea la mesh utilizzando l'algoritmo di Poisson
+        mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=10, n_threads=1)[0]
+
+        # Ruota la mesh se necessario
+        rotation = mesh.get_rotation_matrix_from_xyz((np.pi, 0, 0))
+        mesh.rotate(rotation, center=(0, 0, 0))
+
+        # Visualizza la mesh
+        o3d.visualization.draw_geometries([mesh], mesh_show_back_face=True)
+
+        o3d.io.write_triangle_mesh(filename[:-4]+".obj",mesh)
+
 
     def reconstruct(self):
         """Starts the main reconstruction loop for a given set of views and matches"""
