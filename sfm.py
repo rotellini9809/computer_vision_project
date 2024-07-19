@@ -205,7 +205,6 @@ class SFM:
         filename = os.path.join(self.results_path, str(len(self.done)) + '_images.ply')
 
         pcd = o3d.io.read_point_cloud(filename)
-        o3d.visualization.draw_geometries([pcd])
 
         # Stima delle normali
         pcd.estimate_normals()
