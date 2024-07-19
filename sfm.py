@@ -196,7 +196,7 @@ class SFM:
             pcd.colors=o3d.utility.Vector3dVector(self.colors_3D / 255.0)
         
         # Rimuovi i punti outliers utilizzando il filtro statistico
-        cl, ind = pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=4.0)
+        cl, ind = pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=2.0)
         new_pcd = pcd.select_by_index(ind)
 
         o3d.io.write_point_cloud(filename, pcd)
