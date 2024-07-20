@@ -4,6 +4,7 @@ Welcome to the Structure-from-Motion (SfM) Algorithm repository! This project im
 
 ## Features
 
+- **Camera Calibration**: gets the intrinsic parameters of a camera.
 - **Feature Extraction**: Supports SIFT, SURF, and ORB feature detectors.
 - **Feature Matching**: Efficiently matches features between image pairs.
 - **Pose Estimation**: Computes camera poses using baseline and Perspective-n-Point (PnP) methods.
@@ -31,7 +32,8 @@ pip install -r requirements.txt
 
 ## Usage
 
-To run the SfM algorithm on a dataset, use the `main.py` script. Ensure your dataset follows the structure shown below and contains a camera intrinsic matrix file `K.txt` in the `images` directory.
+- To run the SfM algorithm on a dataset, use the `main.py` script. Ensure your dataset follows the structure shown below and contains a camera intrinsic matrix file `K.txt` in the `images` directory.
+- To get the camera intrinsic parameters add the image of a checkboard in the folder `Scacchiera` and run the `cameracalibration.py` script
 
 ### Dataset Structure
 
@@ -64,6 +66,7 @@ Generate and visualize the 3D mesh.
 - **View**: Represents an individual image used in the reconstruction.
 - **Match**: Represents feature matches between two views.
 - **Utils**: varius functions that are used in the other files
+- **Cameracalibration**: Script used to get intrinsic parameters of a camera
 
 ### Main Script (main.py)
 ``` python
