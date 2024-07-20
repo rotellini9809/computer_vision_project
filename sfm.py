@@ -233,7 +233,7 @@ class SFM:
         o3d.visualization.draw_geometries([pcd], window_name="Point Cloud Visualization")
 
         # Visualize the mesh.
-        o3d.visualization.draw_geometries([mesh], window_name="Mesh Visualization", mesh_show_back_face=False)
+        o3d.visualization.draw_geometries([mesh], window_name="Mesh Visualization", mesh_show_back_face=True)
 
     def reconstruct(self):
         """Starts the main reconstruction loop for a given set of views and matches"""
