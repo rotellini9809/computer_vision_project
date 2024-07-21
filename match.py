@@ -6,9 +6,7 @@ import logging
 
 class Match:
     """Represents a feature matches between two views"""
-
     def __init__(self, view1, view2, match_path):
-
         self.indices1 = []  # indices of the matched keypoints in the first view
         self.indices2 = []  # indices of the matched keypoints in the second view
         self.distances = []  # distance between the matched keypoints in the first view
@@ -29,7 +27,6 @@ class Match:
 
     def get_matches(self, view1, view2):
         """Extracts feature matches between two views"""
-
         matches = self.matcher.match(view1.descriptors, view2.descriptors)
         matches = sorted(matches, key=lambda x: x.distance)
 
@@ -45,7 +42,6 @@ class Match:
 
     def write_matches(self):
         """Writes a match to a pkl file in the root_path/matches directory"""
-
         if not os.path.exists(os.path.join(self.root_path, 'matches')):
             os.makedirs(os.path.join(self.root_path, 'matches'))
 
@@ -60,7 +56,6 @@ class Match:
 
     def read_matches(self):
         """Reads matches from file"""
-
         try:
             matches = pickle.load(
                 open(

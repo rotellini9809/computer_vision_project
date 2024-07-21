@@ -6,7 +6,6 @@ class Baseline:
     """Represents the functions that compute the baseline pose from the initial images of a reconstruction"""
 
     def __init__(self, view1, view2, match_object):
-
         self.view1 = view1  # first view
         self.view1.R = np.eye(3, 3)  # identity rotation since the first view is said to be at the origin
         self.view2 = view2  # second view
@@ -14,7 +13,6 @@ class Baseline:
 
     def get_pose(self, K):
         """Computes and returns the rotation and translation components for the second view"""
-
         F = remove_outliers_using_F(self.view1, self.view2, self.match_object)
         E = K.T @ F @ K  # compute the essential matrix from the fundamental matrix
         logging.info("Computed essential matrix")
@@ -24,7 +22,6 @@ class Baseline:
 
     def check_pose(self, E, K):
         """Retrieves the rotation and translation components from the essential matrix by decomposing it and verifying the validity of the 4 possible solutions"""
-
         R1, R2, t1, t2 = get_camera_from_E(E)  # decompose E
         if not check_determinant(R1):
             R1, R2, t1, t2 = get_camera_from_E(-E)  # change sign of E if R1 fails the determinant test
@@ -56,7 +53,6 @@ class Baseline:
 
     def triangulate(self, K, R, t):
         """Triangulate points between the baseline views and calculates the mean reprojection error of the triangulation"""
-
         K_inv = np.linalg.inv(K)
         P1 = np.hstack((self.view1.R, self.view1.t))
         P2 = np.hstack((R, t))

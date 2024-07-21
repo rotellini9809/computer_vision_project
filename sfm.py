@@ -3,12 +3,9 @@ from utils import *
 import open3d as o3d
 from baseline import Baseline
 
-
 class SFM:
     """Represents the main reconstruction loop"""
-    
     def __init__(self, views, matches, K):
-
         self.colors_3D = np.zeros((0,3))
         self.views = views  # list of views
         self.matches = matches  # dictionary of matches
@@ -31,12 +28,10 @@ class SFM:
 
     def get_index_of_view(self, view):
         """Extracts the position of a view in the list of views"""
-
         return self.names.index(view.name)
 
     def remove_mapped_points(self, match_object, image_idx):
         """Removes points that have already been reconstructed in the completed views"""
-
         inliers1 = []
         inliers2 = []
 
@@ -50,7 +45,6 @@ class SFM:
 
     def compute_pose(self, view1, view2=None, is_baseline=False):
         """Computes the pose of the new view"""
-
         # procedure for baseline pose estimation
         if is_baseline and view2:
 
@@ -87,7 +81,6 @@ class SFM:
 
     def triangulate(self, view1, view2):
         """Triangulates 3D points from two views whose poses have been recovered. Also updates the point_map dictionary"""
-
         K_inv = np.linalg.inv(self.K)
         P1 = np.hstack((view1.R, view1.t))
         P2 = np.hstack((view2.R, view2.t))
@@ -121,9 +114,7 @@ class SFM:
             u2_normalized = K_inv.dot(u2)
 
             point_3D = get_3D_point(u1_normalized, P1, u2_normalized, P2)
-            self.points_3D = np.concatenate((self.points_3D, point_3D.T), axis=0)
-
-            
+            self.points_3D = np.concatenate((self.points_3D, point_3D.T), axis=0)   
 
             color1 = view1.gaussian_image[int(u1[1]), int(u1[0]), :]  # Assumendo che view1.image sia l'immagine
             color2 = view2.gaussian_image[int(u2[1]), int(u2[0]), :]  # Assumendo che view2.image sia l'immagine
@@ -147,7 +138,6 @@ class SFM:
 
     def compute_pose_PNP(self, view):
         """Computes pose of new view using perspective n-point"""
-
         matcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
 
         # collects all the descriptors of the reconstructed views
@@ -183,7 +173,6 @@ class SFM:
 
     def plot_points(self):
         """Saves the reconstructed 3D points to ply files using Open3D"""
-
         number = len(self.done)
         filename = os.path.join(self.results_path, str(number) + '_images.ply')
         pcd = o3d.geometry.PointCloud()
@@ -231,7 +220,6 @@ class SFM:
         logging.info("writing mesh")
         o3d.io.write_triangle_mesh(os.path.join(self.results_path,"mesh.obj"),mesh)
 
-
     def visualize_points_and_mesh(self,root_dir):
         filename_pcd = os.path.join(self.results_path, str(count_files_in_directory(root_dir+"/images")-1) + '_images.ply')
         filename_mesh = os.path.join(self.results_path,"mesh.obj")
@@ -247,7 +235,6 @@ class SFM:
 
     def reconstruct(self):
         """Starts the main reconstruction loop for a given set of views and matches"""
-
         # compute baseline pose
         baseline_view1, baseline_view2 = self.views[0], self.views[1]
         logging.info("Computing baseline pose and reconstructing points")
@@ -264,8 +251,6 @@ class SFM:
             logging.info("Mean reprojection error for %d images is %f", i+1, self.errors[i])
             self.plot_points()
             logging.info("Points plotted for %d views", i+1)
-
-
 
 def count_files_in_directory(directory_path):
     return len([name for name in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, name))])
