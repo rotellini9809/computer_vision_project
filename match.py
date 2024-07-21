@@ -20,11 +20,8 @@ class Match:
         self.view1 = view1
         self.view2 = view2
 
-        if view1.feature_type in ['sift', 'surf']:
-            self.matcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=True)
-        else:
-            self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-
+        self.matcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=True)
+        
         if not match_path:
             self.get_matches(view1, view2)
         else:
