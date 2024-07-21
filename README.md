@@ -51,7 +51,7 @@ data/
 Run the main script with the following command:
 
 ``` bash
-python main.py --root_dir data/fountain-P11 --image_format jpg
+python main.py
 ```
 
 The script will:
