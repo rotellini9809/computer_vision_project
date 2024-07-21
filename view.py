@@ -11,14 +11,13 @@ import matplotlib as plt
 class View:
     """Represents an image used in the reconstruction"""
 
-    def __init__(self, image_path, root_path, feature_path, feature_type='sift'):
+    def __init__(self, image_path, root_path, feature_path):
 
         self.name = os.path.splitext(os.path.basename(image_path))[0]  # image name without extension
         self.image = cv2.imread(image_path)  # numpy array of the image
         self.gaussian_image = cv2.GaussianBlur(self.image, (15, 15), 0)
         self.keypoints = []  # list of keypoints obtained from feature extraction
         self.descriptors = []  # list of descriptors obtained from feature extraction
-        self.feature_type = feature_type  # feature extraction method
         self.root_path = root_path  # root directory containing the image folder
         self.R = np.zeros((3, 3), dtype=float)  # rotation matrix for the view
         self.t = np.zeros((3, 1), dtype=float)  # translation vector for the view
@@ -31,16 +30,8 @@ class View:
     def extract_features(self):
         """Extracts features from the image"""
 
-        if self.feature_type == 'sift':
-            detector = cv2.SIFT_create()
-        elif self.feature_type == 'surf':
-            detector = cv2.SURF_create()
-        elif self.feature_type == 'orb':
-            detector = cv2.ORB_create(nfeatures=1500)
-        else:
-            logging.error("Admitted feature types are SIFT, SURF or ORB")
-            sys.exit(0)
-
+        detector = cv2.SIFT_create()
+        
         self.keypoints, self.descriptors = detector.detectAndCompute(self.image, None)
         logging.info("Computed features for image %s", self.name)
 
