@@ -14,7 +14,7 @@ objpoints = []  # 3d point in real world space
 imgpoints = []  # 2d points in image plane
 
 # Load images
-images = glob.glob('Scacchiera/*.jpg')  # Modify the path to your images
+images = glob.glob('Checkboard/*.jpg')  # Modify the path to your images
 
 for fname in images:
     img = cv2.imread(fname)
