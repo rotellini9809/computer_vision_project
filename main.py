@@ -21,4 +21,4 @@ def run(root_dir,image_format):
 
 if __name__ == '__main__':
 
-    run('data/fountain-P11','jpg')
+    run('data/fire_extinguisher','jpg')
