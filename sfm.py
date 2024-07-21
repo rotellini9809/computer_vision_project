@@ -148,10 +148,7 @@ class SFM:
     def compute_pose_PNP(self, view):
         """Computes pose of new view using perspective n-point"""
 
-        if view.feature_type in ['sift', 'surf']:
-            matcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
-        else:
-            matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
+        matcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
 
         # collects all the descriptors of the reconstructed views
         old_descriptors = []
@@ -209,11 +206,24 @@ class SFM:
         # Stima delle normali
         pcd.estimate_normals()
         pcd.orient_normals_to_align_with_direction()
+
+        # Creating a mesh from point cloud using Poisson Algorithm
+        # mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=10, n_threads=1)[0]
         
+        # Creating a mesh from point cloud using Alpha Shape
+        mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_alpha_shape(pcd, 0.1)
+        
+        # Creating mesh from point cloud using ball pivoting
+        # distances = pcd.compute_nearest_neighbor_distance()
+        # avg_dist = np.mean(distances)
+        # radius = 3 * avg_dist
+        # mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector([radius, radius * 2]))
 
-        # Crea la mesh utilizzando l'algoritmo di Poisson
-        mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=10, n_threads=1)[0]
-
+        mesh = mesh.remove_unreferenced_vertices()
+        mesh = mesh.remove_degenerate_triangles()
+        mesh = mesh.remove_duplicated_triangles()
+        mesh = mesh.remove_non_manifold_edges()
+        
         # Ruota la mesh se necessario
         rotation = mesh.get_rotation_matrix_from_xyz((np.pi, 0, 0))
         mesh.rotate(rotation, center=(0, 0, 0))
