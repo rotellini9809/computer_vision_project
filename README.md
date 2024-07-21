@@ -5,7 +5,7 @@ Welcome to the Structure-from-Motion (SfM) Algorithm repository! This project im
 ## Features
 
 - **Camera Calibration**: gets the intrinsic parameters of a camera.
-- **Feature Extraction**: Supports SIFT, SURF, and ORB feature detectors.
+- **Feature Extraction**: Supports SIFT feature detectors.
 - **Feature Matching**: Efficiently matches features between image pairs.
 - **Pose Estimation**: Computes camera poses using baseline and Perspective-n-Point (PnP) methods.
 - **Triangulation**: Reconstructs 3D points from matched features.
